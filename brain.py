@@ -55,7 +55,13 @@ def search_memory(query, category):
         query_kwargs["where"] = {"category": category}
     
     results = collection.query(**query_kwargs) # Unpacks the query_kwargs dictionary and runs the query
-    
+
+    # Get the similarity between the query and the closest memory, discard if distance is greater than 0.30
+    dist = results.get("distances")
+    # In cosine space, a distance of 0.30 represents an accuracy of around 70%, which I have determined is close enough for the assistant
+    if dist[0][0] > 0.30: # type: ignore
+        return None
+
     try:
         docs = results.get("documents") or [] # "documents" key may be missing or empty; default to an empty list either way to prevent a TypeError
         return docs[0][0] # Return the closest matching entry's text
@@ -203,3 +209,6 @@ def memory_browser():
 # Deletes an entry from ChromaDB using the ID retrieved from memory_browser
 def delete_memory(doc_id):
     collection.delete(ids=[doc_id]) # ids expects a list, even when just deleting a single entry
+
+
+search_memory("Hola", None)
