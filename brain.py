@@ -209,6 +209,3 @@ def memory_browser():
 # Deletes an entry from ChromaDB using the ID retrieved from memory_browser
 def delete_memory(doc_id):
     collection.delete(ids=[doc_id]) # ids expects a list, even when just deleting a single entry
-
-
-search_memory("Hola", None)
