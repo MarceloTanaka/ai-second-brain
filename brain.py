@@ -18,7 +18,14 @@ db_client = chromadb.PersistentClient("./chroma_storage")
 
 # Retrieves the "developer_brain" collection, creates it if it doesn't exist
 # Data is stored semantically (as embeddings), allowing facts to be retrieved by meaning rather than by exact keyword match
-collection = db_client.get_or_create_collection(name="developer_brain")
+collection = db_client.get_or_create_collection(
+    name="developer_brain",
+    configuration={
+        "hnsw": {
+            "space": "cosine", # Changed to cosine distance, since it works better with text embeddings
+        }
+    }
+)
 
 # Initializes a client for the Google GenAI API using credentials from the environment
 # Parentheses were left empty because the API key was loaded as a system variable
